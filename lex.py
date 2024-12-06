@@ -48,13 +48,12 @@ t_TK_COLON = r':'
 t_TK_OPEN_BRACKET = r'\['
 t_TK_CLOSE_BRACKET = r'\]'
 t_TK_OPERATOR_EQUAL = r'='
-t_TK_OPERADORES = r'(<=|>=|<|>)'
+t_TK_OPERADORES = r'(<=|>=|<|>|=)'
 t_TK_COMMENT = r'//.*'
 t_TK_NUMBER = r'(\+|-)?\d+(\.\d+)?'
 t_TK_STRING = r"'[a-zA-Z0-9!¡¿?_@-]*'"
 
 # Expresiones para identificadores y literal
-
 
 def t_TK_IDENTIFIER(t):
     r"[a-zA-Z_][a-zA-Z0-9_]*"
@@ -82,11 +81,12 @@ lexer = lex.lex()
 if __name__ == "__main__":
     data = '''
     INICIO
-    FORM TABLE ejemplo WITH [campo1 : DECIMAL, campo2 : STRING].
+    // comentario
+    FORM TABLE casas WITH [numero : DECIMAL, direccion : STRING].
     {}
-    QUERY campo1, campo2 FROM ejemplo FILTER BY campo1 = 10.
-    ALTER ejemplo COLUMN campo1 = 15 WHERE campo2 = 'valor'.
-    DROP ejemplo COMPLETELY.
+    QUERY numero, direccion FROM casas FILTER BY numero = 10.
+    ALTER casas COLUMN numero = 15 WHERE direccion = 'Autodromo'.
+    DROP casas COMPLETELY.
     FIN
     '''
     lexer.input(data)
