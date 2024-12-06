@@ -34,6 +34,6 @@ pip install -r requirements.txt
 
 Paso 3. Para desactivar el entorno virtual:
 
-````bash
+```bash
 deactivate 
 ```
