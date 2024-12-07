@@ -22,9 +22,9 @@ reserved = {
     'when': 'TK_WHEN',
     'and': 'TK_AND',
     'or': 'TK_OR',
-    'not':'TK_NOT',
+    'not': 'TK_NOT',
     'if': 'TK_IF',
-    'else': 'TK_ELSE'
+    'else': 'TK_ELSE',
 }
 
 # Lista de tokens
@@ -38,28 +38,47 @@ tokens = [
     'TK_NUMBER',
     'TK_COMMENT',
     'TK_OPERATOR_EQUAL',
-    'TK_OPERADORES'
+    'TK_OPERADORES',
+    'TK_MAS',
+    'TK_MENOS',
+    'TK_MULT',
+    'TK_DIV', 
+    'TK_PARAB',
+    'TK_PARCI'
 ] + list(reserved.values())
 
 # Expresiones regulares para los tokens
+t_TK_MAS = r'\+'
+t_TK_MENOS = r'\-'
+t_TK_MULT = r'\*'
+t_TK_DIV = r'\/'
 t_TK_DOT = r'\.'
 t_TK_COMMA = r','
 t_TK_COLON = r':'
 t_TK_OPEN_BRACKET = r'\['
 t_TK_CLOSE_BRACKET = r'\]'
-t_TK_OPERATOR_EQUAL = r'='
-t_TK_OPERADORES = r'(<=|>=|<|>|=)'
+t_TK_OPERATOR_EQUAL = r'(?<![<>!])='
+t_TK_OPERADORES = r'(<=|>=|<|>|!=)'
 t_TK_COMMENT = r'//.*'
-t_TK_NUMBER = r'(\+|-)?\d+(\.\d+)?'
-t_TK_STRING = r"'[a-zA-Z0-9!¡¿?_@-]*'"
+t_TK_STRING = r"'[a-zA-Z]*'"
+t_TK_PARAB = r"\("
+t_TK_PARCI = r"\)"
+
+def t_TK_NUMBER(t):
+    r'(\+|-)?\d+(\.\d+)?'
+    t.value = float(t.value) if '.' in t.value else int(t.value)
+    return t
 
 # Expresiones para identificadores y literal
-
 def t_TK_IDENTIFIER(t):
     r"[a-zA-Z_][a-zA-Z0-9_]*"
     valor_minuscula = t.value.lower()
     t.type = reserved.get(valor_minuscula, 'TK_IDENTIFIER')
     return t
+
+def t_COMMENT(t):
+    r'//.*'
+    pass  # Ignora los comentarios
 
 # Regla de ignorar espacios y tabulaciones
 t_ignore = ' \t'
@@ -79,13 +98,14 @@ lexer = lex.lex()
 
 # Función de prueba para ver cómo se tokeniza una cadena
 if __name__ == "__main__":
+    # Este ejemplo marca el error de tokens no conocidos
     data = '''
     INICIO
     // comentario
     FORM TABLE casas WITH [numero : DECIMAL, direccion : STRING].
     {}
-    QUERY numero, direccion FROM casas FILTER BY numero = 10.
-    ALTER casas COLUMN numero = 15 WHERE direccion = 'Autodromo'.
+    QUERY numero, direccion FROM casas FILTER BY numero = 10 + (5 * 4).
+    ALTER casas COLUMN numero = -15 + (2 * 2) WHERE direccion = 'Autodromo'.
     DROP casas COMPLETELY.
     FIN
     '''

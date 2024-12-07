@@ -1,0 +1,6 @@
+INICIO
+FORM TABLE ejemplo WITH [campo1 : DECIMAL, campo2 : STRING].
+QUERY campo1, campo2 FROM ejemplo FILTER BY campo1 > 5.
+ALTER ejemplo COLUMN campo1 = 15 WHERE campo2 = 'valor'.
+DROP ejemplo COMPLETELY.
+FIN

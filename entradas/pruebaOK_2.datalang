@@ -1,0 +1,6 @@
+INICIO
+// Acá comienza el programa ejemplo
+FORM TABLE ventas WITH [cliente:STRING, compra: DECIMAL]. QUERY cliente, compra FROM ventas FILTER BY total > 100 - 10 * 2.
+// otro comentario
+ALTER ventas COLUMN total = 110 + 2 * 5  WHERE nro_cliente = 10 * 2 + 5. DROP ventas COMPLETELY.
+FIN

@@ -1,15 +1,12 @@
 import ply.yacc as yacc
 from lex import tokens
 
-
 lenguaje_objeto = []
 
 # Declaración de precedencia y asociatividad de los operadores (si es necesario)
 precedence = (
-    ('left', 'TK_OR'),
-    ('left', 'TK_AND'),
-    ('left', 'TK_OPERADORES'),
     ('left', 'TK_OPERATOR_EQUAL'),
+    ('left', 'TK_OPERADORES')
 )
 
 # Definición de la gramática en una lista de tuplas
@@ -31,7 +28,7 @@ def p_Instruccion(t):
     if t[1] is not None:
         print(f"Instruccion '{t[1]}' parseada correctamente")
     else:
-        print("Error: t[1] es None")
+         t[0] = None  # Evita que se quede sin valor
 
 
 def p_DeclaracionTabla(t):
@@ -82,13 +79,49 @@ def p_Filtro(t):
 
 def p_Condicion(t):
     '''Condicion : TK_IDENTIFIER TK_OPERADORES TK_IDENTIFIER
-               | TK_IDENTIFIER TK_OPERADORES Valor'''
-    print(f"Condicion '{t[1]} {t[2]} {t[3]}' parseada correctamente")
+                 | TK_IDENTIFIER TK_OPERATOR_EQUAL TK_IDENTIFIER
+                 | TK_IDENTIFIER TK_OPERADORES Valor
+                 | TK_IDENTIFIER TK_OPERATOR_EQUAL Valor
+                 | TK_IDENTIFIER TK_OPERADORES Expresion
+                 | TK_IDENTIFIER TK_OPERATOR_EQUAL Expresion
+                 '''
+    print(f"Condición '{t[1]} {t[2]} {t[3]}' parseada correctamente")
+    t[0] = ("CONDICION", t[1], t[2], t[3])
+
+def p_Expresion(t):
+    '''Expresion : Expresion TK_MAS Termino
+                 | Expresion TK_MENOS Termino
+                 | Termino'''
+    if len(t) == 4:
+        t[0] = ("OPERACION", t[1], t[2], t[3])
+    else:
+        t[0] = t[1]
+
+def p_Termino(t):
+    '''Termino : Termino TK_MULT Factor
+               | Termino TK_DIV Factor
+               | Factor'''
+    if len(t) == 4:
+        t[0] = ("OPERACION", t[1], t[2], t[3])
+    else:
+        t[0] = t[1]
+
+def p_Factor(t):
+    '''Factor : TK_PARAB Expresion TK_PARCI
+              | Valor'''
+    if len(t) == 4:
+        t[0] = t[2]  # Eliminar los paréntesis
+    else:
+        t[0] = t[1]
+
+
 
 def p_Valor(t):
     '''Valor : TK_NUMBER
-           | TK_STRING'''
-    t[0] = t[1]  # Devuelve el valor como resultado
+             | TK_IDENTIFIER
+             | TK_STRING'''
+    t[0] = t[1]
+
 
 def p_Actualizacion(t):
     '''Actualizacion : TK_ALTER TK_IDENTIFIER TK_COLUMN Asignaciones TK_WHERE Condicion TK_DOT'''
@@ -97,12 +130,16 @@ def p_Actualizacion(t):
 
 
 def p_Asignaciones(t):
-    '''Asignaciones : TK_IDENTIFIER TK_OPERATOR_EQUAL Valor TK_COMMA Asignaciones
-                  | TK_IDENTIFIER TK_OPERATOR_EQUAL Valor'''
-    if len(t) == 4:  # Caso de 'TK_IDENTIFIER TK_OPERATOR_EQUAL Valor'
+    '''Asignaciones : TK_IDENTIFIER TK_OPERATOR_EQUAL Expresion TK_COMMA Asignaciones
+                    | TK_IDENTIFIER TK_OPERATOR_EQUAL Expresion'''
+    if len(t) == 4:  # Caso de 'TK_IDENTIFIER = Expresion'
         print(f"Asignación '{t[1]} = {t[3]}' parseada correctamente")
-    elif len(t) == 6:  # Caso de 'TK_IDENTIFIER TK_OPERATOR_EQUAL Valor TK_COMMA Asignaciones'
-        pass  # No se necesita hacer nada adicional
+        t[0] = (t[1], t[3])  # Devuelve el identificador y la expresión como resultado
+    elif len(t) == 6:  # Caso de 'TK_IDENTIFIER = Expresion , Asignaciones'
+        print(f"Asignación '{t[1]} = {t[3]}' parseada correctamente")
+        t[0] = (t[1], t[3], t[5])  # Devuelve el identificador, la expresión y la siguiente asignación
+
+
 
 def p_Eliminacion(t):
     '''Eliminacion : TK_DROP TK_IDENTIFIER TK_COMPLETELY TK_DOT'''
@@ -123,13 +160,14 @@ parser = yacc.yacc(debug=True, write_tables=False, errorlog=yacc.NullLogger())
 
 # Ejemplo de prueba
 if __name__ == "__main__":
-    
+    """
     data = '''
     INICIO
-    FORM TABLE ejemplo WITH [campo1 : DECIMAL, campo2 : STRING].
-    QUERY campo1, campo2 FROM ejemplo FILTER BY campo1 > 10.
-    ALTER ejemplo COLUMN campo1 = 15 WHERE campo2 = 'valor'.
-    DROP ejemplo COMPLETELY.
+    // Acá comienza el programa ejemplo
+    FORM TABLE ventas WITH [cliente:STRING, compra: DECIMAL]. QUERY cliente, compra FROM ventas FILTER BY total > 100 - 10 * 2.
+    {}
+    // otro comentario
+    ALTER ventas COLUMN total = 110 + 2 * 5  WHERE nro_cliente = 10 * 2 + 5. DROP ventas COMPLETELY.
     FIN
     '''
     parser.parse(data)
@@ -143,4 +181,3 @@ if __name__ == "__main__":
     FIN
     '''
     parser.parse(data)
-    """
