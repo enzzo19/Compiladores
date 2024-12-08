@@ -1,5 +1,6 @@
 import ply.lex as lex
 errores_lexicos = []
+
 # Diccionario de palabras reservadas
 reserved = {
     'inicio': 'TK_INICIO',
