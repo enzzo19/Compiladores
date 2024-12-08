@@ -58,7 +58,8 @@ Archivos:
 Para probar la compilacion de el mismo archivos sin errores mas de una vez, debe comprobar que no exista el archivo `.sql` con el nombre del archivo que desea compilar, de ser asi, debe borrar el archivo de salida previamente generado. (sino agrega contenido, no lo sobreescribe)
 
 Al intentar compilar un archivo que no contiene error la salida deberia verse de esta manera
-![](./img/run_command_1.jpg)
+
+![](./img/run_command_2.jpg)
 
 Y podra encontrar el contenido del lenguaje generado si el archivo no contenia ningun tipo de error en la carpeta salida:
 
@@ -94,7 +95,7 @@ Para que pueda ser compilado y generar el lenguaje objeto debemos corregir todos
 
 Y cuando intentamos compilar la aplicacion nos da el siguiente resultado:
 
-![](./img/run_command_8.jpg)
+![](./img/run_command_9.jpg)
 
 Para que pueda ser compilado y generar el lenguaje objeto debemos corregir todos los errores en ese archivo y luego procedemos a intentar compilar
 

@@ -2,7 +2,7 @@ import ply.yacc as yacc
 from lex import tokens, lexer, errores_lexicos
 errores_sintacticos = []
 lenguaje_objeto = []
-# Declaración de precedencia y asociatividad de los operadores (si es necesario)
+# Declaración de precedencia y asociatividad de los operadores
 precedence = (
     ('left', 'TK_OPERATOR_EQUAL'),
     ('left', 'TK_OPERADORES')
@@ -165,12 +165,10 @@ def p_Asignaciones(t):
         # print(f"Asignación '{t[1]} = {t[3]}' parseada correctamente")
 
 
-
 def p_Eliminacion(t):
     '''Eliminacion : TK_DROP TK_IDENTIFIER TK_COMPLETELY TK_DOT'''
     # print(f"Eliminacion de la tabla '{t[2]}' parseada correctamente")
     lenguaje_objeto.append(f"DROP TABLE {t[2]}")
-
 
 # Manejo de errores sintácticos
 def p_error(t):
@@ -179,17 +177,13 @@ def p_error(t):
         errores_sintacticos.append(f"Error de sintaxis en la línea {t.lineno}, token inesperado '{t.value}'")
         t.lexer.skip(1)
 
-
 # Crear el parser
 parser = yacc.yacc()
-
-# Ejemplo de prueba
 if __name__ == "__main__":
     data = '''
     INICIO
     // Acá comienza el programa ejemplo
     FORM TABLE TABLE productos WITH [nombre:STRING, precio: DECIMAL].QUERY nombre, precio FROM productos FILTER BY precio > 100.
-    {}
     // otro comentario
     ALTER ventas 50 COLUMN total = 110 + 2 * 5  WHERE nro_cliente = 10 * 2 + 5. DROP ventas COMPLETELY.
     FIN
