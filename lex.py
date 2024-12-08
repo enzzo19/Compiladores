@@ -1,5 +1,5 @@
 import ply.lex as lex
-
+errores_lexicos = []
 # Diccionario de palabras reservadas
 reserved = {
     'inicio': 'TK_INICIO',
@@ -19,12 +19,7 @@ reserved = {
     'decimal': 'TK_DECIMAL',
     'string': 'TK_STRING',
     'datetime': 'TK_DATETIME',
-    'when': 'TK_WHEN',
-    'and': 'TK_AND',
-    'or': 'TK_OR',
-    'not': 'TK_NOT',
-    'if': 'TK_IF',
-    'else': 'TK_ELSE',
+    'when': 'TK_WHEN'
 }
 
 # Lista de tokens
@@ -64,6 +59,7 @@ t_TK_STRING = r"'[a-zA-Z]*'"
 t_TK_PARAB = r"\("
 t_TK_PARCI = r"\)"
 
+
 def t_TK_NUMBER(t):
     r'(\+|-)?\d+(\.\d+)?'
     t.value = float(t.value) if '.' in t.value else int(t.value)
@@ -76,9 +72,10 @@ def t_TK_IDENTIFIER(t):
     t.type = reserved.get(valor_minuscula, 'TK_IDENTIFIER')
     return t
 
+
 def t_COMMENT(t):
     r'//.*'
-    pass  # Ignora los comentarios
+    pass
 
 # Regla de ignorar espacios y tabulaciones
 t_ignore = ' \t'
@@ -91,6 +88,7 @@ def t_newline(t):
 # Función para manejar errores léxicos
 def t_error(t):
     print(f"Error léxico en la línea {t.lineno}: caracter inesperado '{t.value[0]}'")
+    errores_lexicos.append(f"Error léxico en la línea {t.lineno}: caracter inesperado '{t.value[0]}'")
     t.lexer.skip(1)
 
 # Crear el lexer
