@@ -1,6 +1,6 @@
 INICIO
 FORM TABLE alumnos WITH [nota : DECIMAL, nombre : STRING].
 QUERY nota, nombre FROM alumnos FILTER BY nota > 5 + 1.
-ALTER alumnos COLUMN nota = 100 - 20.1 * 5 + 8 WHERE nombre = 'Enzo'.
+ALTER alumnos COLUMN nota = 100 - 20.1 * 5 + 8 WHEN nombre = 'Enzo'.
 DROP alumnos COMPLETELY.
 FIN

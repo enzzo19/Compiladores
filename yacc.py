@@ -144,7 +144,7 @@ def p_Valor(t):
 
 
 def p_Actualizacion(t):
-    '''Actualizacion : TK_ALTER TK_IDENTIFIER TK_COLUMN Asignaciones TK_WHERE Condicion TK_DOT'''
+    '''Actualizacion : TK_ALTER TK_IDENTIFIER TK_COLUMN Asignaciones TK_WHEN Condicion TK_DOT'''
     t[0] = f"Actualizar {t[2]}"
     # Convertir las asignaciones en una cadena SQL válida
     asignaciones_sql = ", ".join([f"{asignacion[0]} = {asignacion[1]}" for asignacion in t[4]])

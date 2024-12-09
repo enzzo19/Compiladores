@@ -14,7 +14,6 @@ reserved = {
     'with': 'TK_WITH',
     'alter': 'TK_ALTER',
     'column': 'TK_COLUMN',
-    'where': 'TK_WHERE',
     'drop': 'TK_DROP',
     'completely': 'TK_COMPLETELY',
     'decimal': 'TK_DECIMAL',
